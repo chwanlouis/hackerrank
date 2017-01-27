@@ -3,7 +3,7 @@ class SnakesAndLadders(object):
 	def __init__(self, ladders, snakes):
 		self.ladders = ladders
 		self.snakes = snakes
-		self.nodes = 100
+		self.nodes = 15
 		self.pathway_matrix = self.build_pathway_matrix(self.ladders, self.snakes)
 		# print self.pathway_matrix
 		self.pathway_matrix = self.floyd_warshall_algorithm(self.pathway_matrix)
@@ -27,6 +27,8 @@ class SnakesAndLadders(object):
 				else:
 					row.append(0)
 			pathway_matrix.append(row)
+		print 'chess_board_pathway_init'
+		self.print_matrix(pathway_matrix)
 		return pathway_matrix
 
 	def dice_move_import(self, pathway_matrix):
@@ -38,6 +40,7 @@ class SnakesAndLadders(object):
 		node 2 => node 4 : iterations = 1
 		node 2 => node 5 : iterations = 1
 		node 2 => node 6 : iterations = 1
+		
 		node 2 => node 7 : iterations = 1
 		node 2 => node 8 : iterations = 1
 
@@ -48,6 +51,8 @@ class SnakesAndLadders(object):
 			for k in range(1,7):
 				if i + k < self.nodes:
 					pathway_matrix[i][i+k] = 1
+		print 'dice_move_import'
+		self.print_matrix(pathway_matrix)
 		return pathway_matrix
 
 	def ladders_and_snakes_import(self, pathway_matrix, ladders, snakes):
@@ -66,6 +71,8 @@ class SnakesAndLadders(object):
 		for snake in snakes:
 			start, end = snake
 			pathway_matrix[start-1][end-1] = 0
+		print 'ladders_and_snakes_import'
+		self.print_matrix(pathway_matrix)
 		return pathway_matrix
 
 	def resolve_connectivity(self, pathway_matrix):
@@ -83,6 +90,8 @@ class SnakesAndLadders(object):
 			for j in range(self.nodes):
 				if pathway_matrix[i][j] is None:
 					pathway_matrix[i][j] = penalty
+		print 'resolve_connectivity'
+		self.print_matrix(pathway_matrix)
 		return pathway_matrix
 
 	def build_pathway_matrix(self, ladders, snakes):
@@ -99,47 +108,22 @@ class SnakesAndLadders(object):
 					if i != j and j != k:
 						if pathway_matrix[i][j] > pathway_matrix[i][k] + pathway_matrix[k][j]:
 							pathway_matrix[i][j] = pathway_matrix[i][k] + pathway_matrix[k][j]
-							if i == 0 and j == 99:
-								print pathway_matrix[i][j]
+							# if i == 0 and j == self.nodes-1:
+							# 	# print pathway_matrix[i][j]
+		print 'floyd_warshall_algorithm'
+		self.print_matrix(pathway_matrix)
 		return pathway_matrix
 
+	def print_matrix(self, matrix):
+		for row in matrix:
+			print row
+
 	def get_iterations(self):
-		return self.pathway_matrix[0][99]
-
-
-class InputAdapter(object):
-
-	def __init__(self):
-		self.number_of_test = int(raw_input())
-		self.ladders = list()
-		self.snakes = list()
-		for i in range(self.number_of_test):
-			number_of_leaders = int(raw_input())
-			all_leaders = list()
-			for _ in range(number_of_leaders):
-				head, tail = str(raw_input()).split(' ')
-				leader = [int(head), int(tail)]
-				all_leaders.append(leader)
-			self.ladders.append(all_leaders)
-			number_of_snakes = int(raw_input())
-			all_snakes = list()
-			for _ in range(number_of_snakes):
-				head, tail = str(raw_input()).split(' ')
-				snake = [int(head), int(tail)]
-				all_snakes.append(snake)
-			self.snakes.append(all_snakes)
-
-	def solve(self):
-		"""
-		By Using the class SnakesAndLadders to solve the input source
-		"""
-		for ladders, snakes in zip(self.ladders, self.snakes):
-			print 'Iterations :'
-			chess_board = SnakesAndLadders(ladders, snakes)
-			iterations = chess_board.get_iterations()
-			print iterations
+		return self.pathway_matrix[0][self.nodes-1]
 
 
 if __name__ == '__main__':
-	program = InputAdapter()
-	program.solve()
+	ladders = [[3,14]]
+	snakes = [[13,4], [12,2]]
+	chess_board = SnakesAndLadders(ladders, snakes)
+	print chess_board.get_iterations()
