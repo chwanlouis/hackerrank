@@ -1,0 +1,14 @@
+def S_n(n):
+    return (n ** 2) % 1000000007
+
+
+if __name__ == '__main__':
+    # N = int(raw_input())
+    # for i in range(N):
+    #     n = int(raw_input())
+    #     print S_n(n)
+    num_list = [229137999, 344936985, 681519110, 494844394, 767088309,
+                307062702, 306074554, 555026606, 4762607, 231677104]
+    for i in num_list:
+        print S_n(i)
+
